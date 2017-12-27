@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+	<description>Shiro配置</description>
+
+
+
+
+	<bean id="anonFilter" class="com.znph.saas.shiro.AnonFilter" />
+	<bean id="myshiroRealm" class="com.znph.saas.shiro.MyshiroRealm" />
+	
+	
+	    <!--凭证匹配器-->
+    <bean id="authenticator" class="com.znph.saas.shiro.MyModularRealmAuthenticator">
+        <property name="realms">
+            <list>
+                <ref bean="myshiroRealm"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--权限匹配器-->
+    <bean id="authorizer" class="org.apache.shiro.authz.ModularRealmAuthorizer">
+        <property name="realms">
+            <list>
+                <ref bean="myshiroRealm"/>
+            </list>
+        </property>
+    </bean>
+
+
+	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+
+
+	<!-- securityManager start -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+	
+		<property name="realm" ref="myshiroRealm" />
+        <property name="authenticator" ref="authenticator"/>
+        <property name="authorizer" ref="authorizer"/>
+	</bean>
+	
+
+	<!-- securityManager end -->
+
+
+	<!-- Shiro Filter -->	
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="loginUrl" value="/sys/authUser/go/login"/>
+		<property name="successUrl" value="/sys/table"/>
+		<property name="filterChainDefinitions">
+			<value>		
+			         /static/** = anon
+					/sys/authUser/** = anon
+				   /** = anon
+             </value>
+		</property>
+		<property name="filters">
+			<util:map>
+				<entry key="anon" value-ref="anonFilter" />
+			</util:map>
+		</property>
+	</bean>
+
+
+	<!--
+		开启Shiro的注解（比如@RequiresRoles、@RequiresPermissions）
+		配置以下两个bean即可实现此功能（其需借助SpringAOP扫描使用Shiro注解的类，并在必要时进行安全逻辑验证）
+		并且：Enable Shiro Annotations for Spring-configured beans. Only run after the lifecycleBeanProcessor has run
+		说明：本例并未使用Shiro注解，个人觉得将权限通过注解的方式硬编码在程序中，查看起来不是很方便
+	-->
+	<!--
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+	    <property name="securityManager" ref="securityManager"/>
+	</bean>
+	-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</beans>  

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znph.saas.sys.mapper.CodeMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.znph.saas.sys.entity.Code">
+		<id column="id" property="id" />
+		<result column="code_name" property="codeName" />
+		<result column="sql_sen" property="sqlSen" />
+		<result column="status" property="status" />
+		<result column="create_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+		<result column="table_id" property="tableId" />
+		<result column="code_type" property="codeType" />
+	</resultMap>
+	<resultMap id="CodeVoMap" type="com.znph.saas.sys.entity.Code">
+		<id column="id" property="id" />
+		<result column="code_name" property="codeName" />
+		<result column="sql_sen" property="sqlSen" />
+		<result column="status" property="status" />
+		<result column="create_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+		<result column="table_id" property="tableId" />
+		<result column="code_type" property="codeType" />
+		
+		<result column="host" property="host" />
+		<result column="table_name" property="tableName" />
+	</resultMap>
+	
+
+	<select id="searchList" resultMap="BaseResultMap">
+		select * from tool_code
+		<where>
+			<if test="codeName != null and codeName !='' ">
+				code_name like CONCAT('%',#{codeName},'%')
+			</if>
+			<if test="status != null and status !='' ">
+				and status = #{status}
+			</if>
+			<if test="tableId != null  ">
+				and table_id = #{tableId}
+			</if>
+		</where>
+		order by create_time desc limit #{index},#{size}
+
+	</select>
+
+	<select id="searchTotal" resultType="int">
+		select count(1) from tool_code
+		<where>
+			<if test="codeName != null and codeName !='' ">
+				code_name like CONCAT('%',#{codeName},'%')
+			</if>
+			<if test="status != null and status !='' ">
+				and status = #{status}
+			</if>
+			<if test="tableId != null  ">
+				and table_id = #{tableId}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getCodeVoInfo" resultMap="CodeVoMap">
+		select sc.*,st.table_name,st.`host` from tool_code sc,tool_table st where sc.id = #{id} and sc.table_id = st.id
+	</select>
+	
+
+
+
+
+</mapper>

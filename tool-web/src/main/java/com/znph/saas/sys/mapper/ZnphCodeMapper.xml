@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znph.saas.sys.mapper.ZnphCodeMapper" >
+
+
+	<resultMap id="CodeVoMap" type="com.znph.saas.sys.entity.Code">
+		<id column="id" property="id" />
+		<result column="code_name" property="codeName" />
+		<result column="sql_sen" property="sqlSen" />
+		<result column="status" property="status" />
+		<result column="create_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+		<result column="table_id" property="tableId" />
+		<result column="code_type" property="codeType" />
+		
+		<result column="host" property="host" />
+		<result column="table_name" property="tableName" />
+	</resultMap>
+	
+	<select id="getCodeVoInfo" resultMap="CodeVoMap">
+		select sc.*,st.table_name,st.`host` from tool_code sc,tool_table st where sc.id = #{id} and sc.table_id = st.id
+	</select>
+
+    <select id="excuteSql"  resultType="java.util.Map">
+        ${sql}
+    </select>
+    
+    <select id="excuteSqlCountTotal" resultType="int">
+    	${sql}
+    </select>
+    
+    <update id="createNewTable">
+      CREATE TABLE ${tableName} ${tableSen}
+    </update>
+</mapper>

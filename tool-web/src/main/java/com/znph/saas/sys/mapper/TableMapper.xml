@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.znph.saas.sys.mapper.TableMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.znph.saas.sys.entity.Table">
+		<id column="id" property="id" />
+		<result column="table_sen" property="tableSen" />
+		<result column="table_name" property="tableName" />
+		<result column="update_time" property="updateTime" />
+		<result column="create_time" property="createTime" />
+		<result column="table_remark" property="tableRemark" />
+		<result column="host" property="host" />
+	</resultMap>
+	
+	<select id="searchList" resultMap="BaseResultMap">
+		select * from tool_table
+		<where>
+			<if test="tableName != null and tableName !='' ">
+				table_name like CONCAT('%',#{tableName},'%')
+			</if>
+			<if test="host != null and host !='' ">
+				and host = #{host}
+			</if>
+		</where>
+		order by create_time desc limit #{index},#{size}
+
+	</select>
+
+	<select id="searchTotal" resultType="int">
+		select count(1) from tool_table
+		<where>
+			<if test="tableName != null and tableName !='' ">
+				table_name like CONCAT('%',#{tableName},'%')
+			</if>
+			<if test="host != null and host !='' ">
+				and host = #{host}
+			</if>
+		</where>
+	</select>	
+	
+	
+	
+
+</mapper>

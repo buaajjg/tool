@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+	http://www.springframework.org/schema/cache  http://www.springframework.org/schema/cache/spring-cache.xsd ">
+
+
+	<!-- 引入属性文件 -->
+	<bean id="propertyConfigurer" class="com.znph.core.common.property.PropertyPlaceholderConfigurer">
+	    <property name="locations">
+	        <list>
+	            <value>classpath*:*.properties</value>
+	            <value>classpath*:env/${spring.profiles.active}/*.properties</value>
+	        </list>
+	    </property>
+	    <property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+
+	
+	<bean id="messageSourceRegister" class="com.znph.core.common.property.MessageSourceRegister">
+	    <property name="locations">
+	        <list>
+	            <value>classpath*:message/*.properties</value>
+	        </list>
+	    </property>
+	</bean>
+
+	
+
+	<context:component-scan base-package="com.znph.saas.*.service"></context:component-scan>
+	
+	
+	<!-- 自定义 SerializeConfig -->
+	<bean  class="com.znph.core.common.mp.BaseWebConfig" />
+	<!-- 框架异常处理Handler -->
+	<bean id="exceptionResolver" class="com.znph.core.common.exception.MyHandlerExceptionResolver" />
+	
+
+	<!-- shiro验证配置文件 -->
+
+	<import resource="classpath*:spring/applicationContext-mybatis.xml" />
+
+
+</beans>
